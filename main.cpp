@@ -1,45 +1,147 @@
 #include <Windows.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
-const int NUM_KEYS = 7;
-const int KEY_FREQS[NUM_KEYS] = { 262, 294, 330, 349, 392, 440, 494 };
-const char KEY_NAMES[NUM_KEYS] = { 'C', 'D', 'E', 'F', 'G', 'A', 'B' };
+class Chord;
+class Note;
+
+class Note
+{
+public:
+    int A,B,C,D,E,F,G;
+    Note()
+    {
+        A=440;
+        B=494;
+        C=262;
+        D=294;
+        E=330;
+        F=349;
+        G=392;
+    }
+    virtual void play()
+    {
+        char note;
+        cout<<"Enter notes to play: \n";
+        cin >> note;
+        do{
+        switch (note) {
+                case 'A':
+                case 'a':
+                    Beep(A,300);
+                    break;
+                case 'B':
+                case 'b':
+                    Beep(B,300);
+                    break;
+                case 'C':
+                case 'c':
+                    Beep(C,300);
+                    break;
+                case 'D':
+                case 'd':
+                    Beep(D,300);
+                    break;
+                case 'E':
+                case 'e':
+                    Beep(E,300);
+                    break;
+                case 'F':
+                case 'f':
+                    Beep(F,300);
+                    break;
+                case 'G':
+                case 'g':
+                    Beep(G,300);
+                    break;
+                default:
+                    cout << "Invalid note" << endl;
+                    break;
+            }
+
+    } while(note!='q'||note!='Q');
+};
+
+class Chord : public Note
+{
+public:
+    Chord()
+    {
+        cout<<"Chord being played"<<endl;
+    }
+    void addChord()
+    {
+        cout << "(Enter notes A, B, C, D, E, F, G and Q to play them)\n";
+        char input;
+        fstream chord;
+        chord.open("chord.txt", ios::out);
+        do {
+            cin >> input;
+            if (!chord) {
+                cout << "Couldn't create chord file" << endl;
+                break;
+            }
+            else {
+                chord << input;
+            }
+        } while (input != 'q');
+        chord.close();
+    }
+    void play()
+    {
+        char note;
+        fstream chord;
+        chord.open("chord.txt", ios::in);
+        if (!chord) {
+            cout << "Couldn't open chord file" << endl;
+        }
+        else {
+            while (chord >> note) {
+                switch (note) {
+                    case 'A':
+                    case 'a':
+                        Beep(A, 300);
+                        break;
+                    case 'B':
+                    case 'b':
+                        Beep(B, 300);
+                        break;
+                    case 'C':
+                    case 'c':
+                        Beep(C, 300);
+                        break;
+                    case 'D':
+                    case 'd':
+                        Beep(D, 300);
+                        break;
+                    case 'E':
+                    case 'e':
+                        Beep(E, 300);
+                        break;
+                    case 'F':
+                    case 'f':
+                        Beep(F, 300);
+                        break;
+                    case 'G':
+                    case 'g':
+                        Beep(G, 300);
+                        break;
+                    default:
+                        cout << "Invalid note" << endl;
+                        break;
+                }
+            }
+        }
+        chord.close();
+    }
+};
+
 
 int main()
 {
-    cout << "Simple Piano Application\n\n";
-    cout << "Press the following keys to play the corresponding notes:\n";
-    cout << " C D E F G A B\n";
-
-    while (true)
-    {
-        char key = getchar();
-
-        // Exit the program if the user presses 'q'
-        if (key == 'q')
-        {
-            break;
-        }
-
-        // Find the index of the pressed key in the KEY_NAMES array
-        int keyIndex = -1;
-        for (int i = 0; i < NUM_KEYS; i++)
-        {
-            if (toupper(key) == KEY_NAMES[i])
-            {
-                keyIndex = i;
-                break;
-            }
-        }
-
-        // If a valid key was pressed, play the corresponding note
-        if (keyIndex >= 0)
-        {
-            Beep(KEY_FREQS[keyIndex], 300);
-        }
-    }
-
+    Note n1;
+    n1.play();
     return 0;
 }
